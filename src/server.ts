@@ -6,6 +6,7 @@ import path from "path";
 import { connectDB } from "./config/db.js";
 
 import userRouter from "./routes/UserRoute.js";
+import profileRouter from "./routes/ProfileRoute.js";
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(express.json()); // allows us to accept JSON data in the req.body
 app.use(cors());
 
 app.use("/api/user", userRouter);
+app.use("/api/profile", profileRouter);
 
 app.use("/", (req: Request, res: Response): any => {
   return res.status(400).json({
