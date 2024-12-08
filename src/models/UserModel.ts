@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import validator from "validator";
 
 const userSchema: mongoose.Schema = new mongoose.Schema(
   {
@@ -19,7 +20,7 @@ const userSchema: mongoose.Schema = new mongoose.Schema(
       unique: [true, "E-mail must be unique!"],
       validate: {
         validator: (email: string): boolean => {
-          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+          return validator.isEmail(email);
         },
         message: "Invalid e-mail format!",
       },
