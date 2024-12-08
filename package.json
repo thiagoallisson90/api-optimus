@@ -4,7 +4,7 @@
   "main": "./dist/server.ts",
   "scripts": {
     "dev": "tsx watch ./src/server.ts",
-    "build": "tsc",
+    "build": "npm install && tsc",
     "start": "node ./dist/server.js"
   },
   "keywords": [],
