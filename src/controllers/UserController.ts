@@ -129,7 +129,10 @@ export const updateUser: RequestHandler = async (
       new: true,
     });
     return res.status(200).json({ success: true, data: "User Updated!" });
-  } catch (error) {
+  } catch (error: any) {
+    if (process.env.NODE_ENV === "development") {
+      console.error(error.message);
+    }
     return res.status(500).json({ success: false, message: "Server Error" });
   }
 };
@@ -157,7 +160,7 @@ export const deleteUser: RequestHandler = async (
     }
   } catch (error: any) {
     if (process.env.NODE_ENV) {
-      console.log("error in deleting product:", error.message);
+      console.log("error in deleting user:", error.message);
     }
     res.status(500).json({ success: false, message: "Server Error" });
   }
