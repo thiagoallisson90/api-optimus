@@ -1,5 +1,5 @@
 {
-  "name": "optimus-api",
+  "name": "api-optimus",
   "version": "1.0.0",
   "main": "./dist/server.ts",
   "scripts": {
