@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import validator from "validator";
+import { z } from "zod";
 
 const userSchema: mongoose.Schema = new mongoose.Schema(
   {
@@ -20,7 +20,8 @@ const userSchema: mongoose.Schema = new mongoose.Schema(
       unique: [true, "E-mail must be unique!"],
       validate: {
         validator: (email: string): boolean => {
-          return validator.isEmail(email);
+          const v = z.string().email();
+          return v.safeParse(email).success;
         },
         message: "Invalid e-mail format!",
       },

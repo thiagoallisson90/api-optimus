@@ -118,6 +118,9 @@ const userLoRaSimSchema = z
     user: z.string({
       required_error: "User is required!",
     }),
+    numRep: z.coerce.number({
+      required_error: "Number of Repetitions is required!",
+    }),
   })
   .refine(
     (data) => {
@@ -171,6 +174,7 @@ interface IUserLoRaSimController {
   lossModel: string;
   shadowingModel: boolean;
   user: string;
+  numRep: number;
 }
 
 export const getUserLoRaSim: RequestHandler = async (
@@ -292,16 +296,19 @@ export const deleteUserLoRaSim: RequestHandler = async (
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res
         .status(404)
-        .json({ success: false, message: "Invalid User Id" });
+        .json({ success: false, message: "Invalid User LoRa Simulation Id" });
     }
 
-    const delUser = await UserLoRaSimulation.findByIdAndDelete(id);
-    if (delUser) {
-      return res.status(200).json({ success: true, message: "User deleted!" });
+    const delUserLoRaSim = await UserLoRaSimulation.findByIdAndDelete(id);
+    if (delUserLoRaSim) {
+      return res.status(200).json({
+        success: true,
+        message: `User LoRa Simulation ${delUserLoRaSim._id} deleted!`,
+      });
     } else {
       return res
         .status(404)
-        .json({ success: true, message: "User not found!" });
+        .json({ success: true, message: "User LoRa Simulation not found!" });
     }
   } catch (error: any) {
     if (process.env.NODE_ENV) {

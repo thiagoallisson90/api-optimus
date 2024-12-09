@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface IUserLoRaSim extends mongoose.Document {
+interface IUserLoRaSimModel extends mongoose.Document {
   name: string;
   description?: string;
   xDim: number;
@@ -19,10 +19,11 @@ interface IUserLoRaSim extends mongoose.Document {
   lossModel: string;
   shadowingModel: boolean;
   user: mongoose.Schema.Types.ObjectId;
+  numRep: number;
 }
 
 const userLoRaSimulationSchema: mongoose.Schema =
-  new mongoose.Schema<IUserLoRaSim>(
+  new mongoose.Schema<IUserLoRaSimModel>(
     {
       name: {
         type: String,
@@ -131,7 +132,11 @@ const userLoRaSimulationSchema: mongoose.Schema =
       user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: ["true", "User is required!"],
+        required: [true, "User is required!"],
+      },
+      numRep: {
+        type: Number,
+        required: [true, "Number of Repetitions is required!"],
       },
     },
     {
@@ -139,7 +144,7 @@ const userLoRaSimulationSchema: mongoose.Schema =
     }
   );
 
-const UserLoRaSimulation = mongoose.model<IUserLoRaSim>(
+const UserLoRaSimulation = mongoose.model<IUserLoRaSimModel>(
   "UserLoRaSimulation",
   userLoRaSimulationSchema
 );

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import validator from "validator";
+import { z } from "zod";
 
 const profileSchema: mongoose.Schema = new mongoose.Schema(
   {
@@ -8,7 +8,8 @@ const profileSchema: mongoose.Schema = new mongoose.Schema(
       required: false,
       validate: {
         validator: (github: string): boolean => {
-          return validator.isURL(github);
+          const v = z.string().url();
+          return v.safeParse(github).success;
         },
         message: "Invalid Github!",
       },
