@@ -7,6 +7,13 @@ import path from "path";
 
 const __dirname = path.resolve();
 
+class FileError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "File Error";
+  }
+}
+
 const makeFileName = (file: string, ext = "csv") => {
   const now = new Date();
   const formattedDateTime = `${now.getDate().toString().padStart(2, "0")}-${(
@@ -20,15 +27,8 @@ const makeFileName = (file: string, ext = "csv") => {
     .getSeconds()
     .toString()
     .padStart(2, "0")}`;
-  return `files/${file}_${formattedDateTime}.${ext}`;
+  return `files${path.sep}${file}_${formattedDateTime}.${ext}`;
 };
-
-class FileError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "File Error";
-  }
-}
 
 const saveCoords = (content: string, file: string): string => {
   const fileName = path.join(__dirname, makeFileName(file));
