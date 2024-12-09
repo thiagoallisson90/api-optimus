@@ -33,7 +33,11 @@ class FileError extends Error {
 const saveCoords = (content: string, file: string): string => {
   const fileName = path.join(__dirname, makeFileName(file));
 
-  fs.writeFileSync(fileName, content);
+  try {
+    fs.writeFileSync(fileName, content); //  NodeJS.ErrnoException
+  } catch (error: any) {
+    throw new FileError(error.message);
+  }
 
   return fileName;
 };
@@ -75,28 +79,28 @@ const userLoRaSimSchema = z
         required_error: "Description is required!",
       })
       .optional(),
-    xDim: z
+    xDim: z.coerce
       .number({
         required_error: "X-dimension is required!",
       })
       .gt(0, {
         message: "X-dimension must be greater than 0!",
       }),
-    yDim: z
+    yDim: z.coerce
       .number({
         required_error: "Y-dimension is required!",
       })
       .gt(0, {
         message: "Y-dimension be greater than 0!",
       }),
-    simTime: z
+    simTime: z.coerce
       .number({
         required_error: "Simulation Time is required!",
       })
       .gt(0, {
         message: "Simulation time must be greater than 0!",
       }),
-    numGWs: z
+    numGWs: z.coerce
       .number({
         required_error: "Number of Gateways is required!",
       })
@@ -107,13 +111,13 @@ const userLoRaSimSchema = z
     gwCoords: z.string({
       required_error: "Gateway's coordinates are required!",
     }),
-    bw: z.number({
+    bw: z.coerce.number({
       required_error: "Bandwidth is required!",
     }),
-    freq: z.number({
+    freq: z.coerce.number({
       required_error: "Frequency is required!",
     }),
-    numEDs: z
+    numEDs: z.coerce
       .number({
         required_error: "Number of EDs is required!",
       })
@@ -132,12 +136,12 @@ const userLoRaSimSchema = z
       required_error: "Operation Mode is required!",
       message: "Operation mode is not supported!",
     }),
-    nackPerc: z
+    nackPerc: z.coerce
       .number({
         required_error: "NACK Percentage is required!",
       })
       .gte(0),
-    ackPerc: z
+    ackPerc: z.coerce
       .number({
         required_error: "ACK Percentage is required!",
       })
@@ -180,7 +184,11 @@ const userLoRaSimSchema = z
       message: "ED's coordinates are invalid!",
       path: ["edCoords"],
     }
-  );
+  )
+  .refine((data) => data.ackPerc + data.nackPerc == 100, {
+    message: "The sum of ackPerc and nackPerc must be equal to 100%",
+    path: ["opMode"],
+  });
 
 interface IUserLoRaSimulation {
   name: string;
@@ -236,16 +244,14 @@ export const createUserLoRaSim: RequestHandler = async (
     }
 
     userLoRaSim.gwCoords = saveCoords(userLoRaSim.gwCoords, "gwCoords");
+    userLoRaSim.edCoords = saveCoords(userLoRaSim.edCoords, "edCoords");
 
     const newSim = await new UserLoRaSimulation(userLoRaSim).save();
     return res.status(201).json({ success: true, data: newSim._id });
-  } catch (error) {
-    if (error instanceof FileError) {
-      console.error(error.message);
-    }
-    /*if (process.env.NODE_ENV === "development") {
+  } catch (error: any) {
+    if (process.env.NODE_ENV === "development") {
       console.error("Error in Create User Simulation LoRa:", error.message);
-    }*/
+    }
 
     return res.status(500).json({
       success: false,
