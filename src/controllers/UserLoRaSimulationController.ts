@@ -42,6 +42,16 @@ const saveCoords = (content: string, file: string): string => {
   return fileName;
 };
 
+const delCoords = (fileName: string): boolean => {
+  try {
+    fs.rmSync(fileName);
+  } catch (error: any) {
+    throw new FileError(error.message);
+  }
+
+  return true;
+};
+
 const verifyCoords = (coords: string[]): boolean => {
   const test: boolean[] = coords.map((coord) => {
     const pos = coord.trim().split(",");
@@ -190,7 +200,7 @@ const userLoRaSimSchema = z
     path: ["opMode"],
   });
 
-interface IUserLoRaSimulation {
+interface IUserLoRaSimController {
   name: string;
   description?: string;
   xDim: number;
@@ -234,7 +244,7 @@ export const createUserLoRaSim: RequestHandler = async (
   res: Response
 ): Promise<any> => {
   try {
-    const userLoRaSim = req.body as IUserLoRaSimulation;
+    const userLoRaSim = req.body as IUserLoRaSimController;
 
     const parse = userLoRaSimSchema.safeParse(userLoRaSim);
     if (!parse.success) {
@@ -264,15 +274,11 @@ export const updateUserLoRaSim: RequestHandler = async (
   req: Request,
   res: Response
 ): Promise<any> => {
+  let session: mongoose.ClientSession | null = null;
+
   try {
     const { id } = req.params;
-    const userLoRaSim = req.body as {
-      name: string;
-      email: string;
-      password: string;
-      confirmPassword?: string;
-      userType: string;
-    };
+    const userLoRaSim = req.body as IUserLoRaSimController;
 
     const parse = userLoRaSimSchema.safeParse(userLoRaSim);
     if (!parse.success) {
@@ -287,9 +293,28 @@ export const updateUserLoRaSim: RequestHandler = async (
         .json({ success: false, message: "Invalid LoRa Simulation Id!" });
     }
 
-    await UserLoRaSimulation.findByIdAndUpdate(id, userLoRaSim, {
-      new: true,
-    });
+    session = await UserLoRaSimulation.startSession();
+    session.startTransaction();
+
+    const document = await UserLoRaSimulation.findById(id).exec();
+
+    if (userLoRaSim.gwCoords) {
+      userLoRaSim.gwCoords = saveCoords(userLoRaSim.gwCoords, "gwCoords");
+      if (document) {
+        delCoords(document.gwCoords);
+      }
+    }
+
+    if (userLoRaSim.edCoords) {
+      userLoRaSim.edCoords = saveCoords(userLoRaSim.edCoords, "edCoords");
+      if (document) {
+        delCoords(document.edCoords);
+      }
+    }
+
+    await UserLoRaSimulation.findByIdAndUpdate(id, userLoRaSim, { new: true });
+    session.commitTransaction();
+
     return res
       .status(200)
       .json({ success: true, data: "LoRa Simulation Updated!" });
@@ -298,6 +323,10 @@ export const updateUserLoRaSim: RequestHandler = async (
       console.error(error.message);
     }
     return res.status(500).json({ success: false, message: "Server Error" });
+  } finally {
+    if (session) {
+      await session.endSession();
+    }
   }
 };
 
