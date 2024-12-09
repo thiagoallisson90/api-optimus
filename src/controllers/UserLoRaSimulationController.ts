@@ -2,55 +2,7 @@ import { Response, Request, RequestHandler } from "express";
 import { z } from "zod";
 import mongoose from "mongoose";
 import UserLoRaSimulation from "../models/UserLoRaSimulationModel.js";
-import fs from "node:fs";
-import path from "path";
-
-const __dirname = path.resolve();
-
-class FileError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "File Error";
-  }
-}
-
-const makeFileName = (file: string, ext = "csv") => {
-  const now = new Date();
-  const formattedDateTime = `${now.getDate().toString().padStart(2, "0")}-${(
-    now.getMonth() + 1
-  )
-    .toString()
-    .padStart(2, "0")}-${now.getFullYear()}_${now
-    .getHours()
-    .toString()
-    .padStart(2, "0")}-${now.getMinutes().toString().padStart(2, "0")}-${now
-    .getSeconds()
-    .toString()
-    .padStart(2, "0")}`;
-  return `files${path.sep}${file}_${formattedDateTime}.${ext}`;
-};
-
-const saveCoords = (content: string, file: string): string => {
-  const fileName = path.join(__dirname, makeFileName(file));
-
-  try {
-    fs.writeFileSync(fileName, content); //  NodeJS.ErrnoException
-  } catch (error: any) {
-    throw new FileError(error.message);
-  }
-
-  return fileName;
-};
-
-const delCoords = (fileName: string): boolean => {
-  try {
-    fs.rmSync(fileName);
-  } catch (error: any) {
-    throw new FileError(error.message);
-  }
-
-  return true;
-};
+import { delCoords, saveCoords } from "../utils/file.js";
 
 const verifyCoords = (coords: string[]): boolean => {
   const test: boolean[] = coords.map((coord) => {
@@ -195,7 +147,7 @@ const userLoRaSimSchema = z
       path: ["edCoords"],
     }
   )
-  .refine((data) => data.ackPerc + data.nackPerc == 100, {
+  .refine((data) => data.ackPerc + data.nackPerc === 100, {
     message: "The sum of ackPerc and nackPerc must be equal to 100%",
     path: ["opMode"],
   });
