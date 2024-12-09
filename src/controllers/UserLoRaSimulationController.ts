@@ -2,7 +2,7 @@ import { Response, Request, RequestHandler } from "express";
 import { z } from "zod";
 import mongoose from "mongoose";
 import UserLoRaSimulation from "../models/UserLoRaSimulationModel.js";
-import { delCoords, saveCoords } from "../utils/file.js";
+import { createFolder, delCoords, saveCoords } from "../utils/file.js";
 
 const verifyCoords = (coords: string[]): boolean => {
   const test: boolean[] = coords.map((coord) => {
@@ -208,6 +208,8 @@ export const createUserLoRaSim: RequestHandler = async (
         .status(404)
         .json({ success: false, message: parse.error.errors });
     }
+
+    createFolder("files");
 
     userLoRaSim.gwCoords = saveCoords(userLoRaSim.gwCoords, "gwCoords");
     userLoRaSim.edCoords = saveCoords(userLoRaSim.edCoords, "edCoords");

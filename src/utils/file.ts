@@ -47,3 +47,16 @@ export const delCoords = (fileName: string): boolean => {
 
   return true;
 };
+
+export const createFolder = (folder: string): boolean => {
+  try {
+    const folderName = path.join(__dirname, folder);
+    if (!fs.existsSync(folderName)) {
+      fs.mkdirSync(folderName);
+    }
+  } catch (error: any) {
+    throw new FileError(error.message);
+  }
+
+  return true;
+};
