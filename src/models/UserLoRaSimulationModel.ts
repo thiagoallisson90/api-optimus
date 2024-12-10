@@ -11,7 +11,7 @@ interface IUserLoRaSimModel extends mongoose.Document {
   bw: number;
   freq: number;
   numEDs: number;
-  edCoords: string;
+  //edCoords: string;
   edClass: string;
   opMode: string;
   nackPerc: number;
@@ -89,10 +89,10 @@ const userLoRaSimulationSchema: mongoose.Schema =
           message: "Number of EDs must be greater than 0!",
         },
       },
-      edCoords: {
+      /*edCoords: {
         type: String,
         required: [true, "ED's coordinates are required!"],
-      },
+      },*/
       edClass: {
         type: String,
         required: true,

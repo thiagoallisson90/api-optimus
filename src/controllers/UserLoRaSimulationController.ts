@@ -87,9 +87,9 @@ const userLoRaSimSchema = z
       .gt(0, {
         message: "Number of EDs must be greater than 0!",
       }),
-    edCoords: z.string({
+    /*edCoords: z.string({
       required_error: "ED's coordinates are required!",
-    }),
+    }),*/
     edClass: z.enum(["A", "B", "C"], {
       required_error: "ED's Class is required!",
       message: "ED Class is not supported!",
@@ -136,7 +136,7 @@ const userLoRaSimSchema = z
       path: ["gwCoords"],
     }
   )
-  .refine(
+  /*.refine(
     (data) => {
       const coords: string[] = data.edCoords.split(";");
       if (coords.length < data.numEDs) {
@@ -149,7 +149,7 @@ const userLoRaSimSchema = z
       message: "ED's coordinates are invalid!",
       path: ["edCoords"],
     }
-  )
+  )*/
   .refine((data) => data.ackPerc + data.nackPerc === 100, {
     message: "The sum of ackPerc and nackPerc must be equal to 100%",
     path: ["opMode"],
@@ -166,7 +166,7 @@ interface IUserLoRaSimController {
   bw: number;
   freq: number;
   numEDs: number;
-  edCoords: string;
+  //edCoords: string;
   edClass: string;
   opMode: string;
   nackPerc: number;
@@ -212,7 +212,7 @@ export const createUserLoRaSim: RequestHandler = async (
     createFolder("files");
 
     userLoRaSim.gwCoords = saveCoords(userLoRaSim.gwCoords, "gwCoords");
-    userLoRaSim.edCoords = saveCoords(userLoRaSim.edCoords, "edCoords");
+    //userLoRaSim.edCoords = saveCoords(userLoRaSim.edCoords, "edCoords");
 
     const newSim = await new UserLoRaSimulation(userLoRaSim).save();
     return res.status(201).json({ success: true, data: newSim._id });
@@ -263,12 +263,12 @@ export const updateUserLoRaSim: RequestHandler = async (
       }
     }
 
-    if (userLoRaSim.edCoords) {
+    /*if (userLoRaSim.edCoords) {
       userLoRaSim.edCoords = saveCoords(userLoRaSim.edCoords, "edCoords");
       if (document) {
         delCoords(document.edCoords);
       }
-    }
+    }*/
 
     await UserLoRaSimulation.findByIdAndUpdate(id, userLoRaSim, { new: true });
     session.commitTransaction();
