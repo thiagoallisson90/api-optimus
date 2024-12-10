@@ -4,13 +4,21 @@ interface IEDCoords {
   z: number;
 }
 
-export const genCoords = (n: number): Array<IEDCoords> => {
+interface IRange {
+  xLim: number;
+  yLim: number;
+}
+
+export const genCoords = (
+  n: number,
+  lims: IRange = { xLim: 100, yLim: 100 }
+): Array<IEDCoords> => {
   const coordinates: Array<IEDCoords> = [];
 
   for (let i = 0; i < n; i++) {
     coordinates.push({
-      x: Math.random() * 10000, // Valor entre 0 e 10000
-      y: Math.random() * 10000, // Valor entre 0 e 10000
+      x: Math.random() * lims.xLim,
+      y: Math.random() * lims.yLim,
       z: 1.5,
     });
   }
