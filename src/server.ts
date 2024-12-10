@@ -8,6 +8,7 @@ import { connectDB } from "./config/db.js";
 import userRouter from "./routes/UserRoute.js";
 import profileRouter from "./routes/ProfileRoute.js";
 import userLoRaSimRouter from "./routes/UserLoRaSimulationRoute.js";
+import userLoRaSimAppRouter from "./routes/UserLoRaSimAppRoute.js";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(cors());
 app.use("/api/user", userRouter);
 app.use("/api/profile", profileRouter);
 app.use("/api/userlorasim", userLoRaSimRouter);
+app.use("/api/userlorasimapp", userLoRaSimAppRouter);
 
 app.use("/", (req: Request, res: Response): any => {
   return res.status(400).json({
