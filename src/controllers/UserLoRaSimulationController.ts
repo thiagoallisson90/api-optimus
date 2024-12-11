@@ -195,7 +195,7 @@ export const getUserLoRaSims: RequestHandler = async (
   }
 };
 
-export const getUserLoRaSim: RequestHandler = async (
+export const getUserLoRaSimById: RequestHandler = async (
   req: Request,
   res: Response
 ): Promise<any> => {

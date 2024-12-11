@@ -3,7 +3,7 @@ import express from "express";
 import {
   createUserLoRaSim,
   deleteUserLoRaSim,
-  getUserLoRaSim,
+  getUserLoRaSimById,
   getUserLoRaSims,
   updateUserLoRaSim,
 } from "../controllers/UserLoRaSimulationController.js";
@@ -11,7 +11,7 @@ import {
 const router = express.Router();
 
 router.get("/", getUserLoRaSims);
-router.get("/:id", getUserLoRaSim);
+router.get("/:id", getUserLoRaSimById);
 router.post("/", createUserLoRaSim);
 router.put("/:id", updateUserLoRaSim);
 router.delete("/:id", deleteUserLoRaSim);
