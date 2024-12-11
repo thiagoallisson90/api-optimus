@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "./dist/server.ts",
   "scripts": {
-    "dev": "tsx watch ./src/server.ts",
-    "build": "npm install && tsc",
-    "start": "node ./dist/server.js"
+    "dev": "tsx watch src/server.ts",
+    "build": "tsup src",
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +19,7 @@
     "@types/mongoose": "^5.11.96",
     "@types/node": "^22.10.1",
     "@types/validator": "^13.12.2",
+    "tsup": "^8.3.5",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   },
