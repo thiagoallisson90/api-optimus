@@ -10,5 +10,6 @@
 - [x] Implementar updateApp in UserLoRaSimApp.
 - [x] Adicionar updateApp a rota.
 - [x] Testar updateApp.
-- [ ] Implementar deleteApp in UserLoRaSimApp.
-- [ ] Testar deleteApp.
+- [x] Implementar deleteApp in UserLoRaSimApp.
+- [x] Adicionar deleteApp a rota.
+- [x] Testar deleteApp.
