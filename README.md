@@ -7,7 +7,8 @@
 - [x] Implementar createApp in UserLoRaSimApp.
 - [x] Adicionar createApp a rota.
 - [x] Testar createApp.
-- [ ] Implementar updateApp in UserLoRaSimApp.
-- [ ] Testar updateApp.
+- [x] Implementar updateApp in UserLoRaSimApp.
+- [x] Adicionar updateApp a rota.
+- [x] Testar updateApp.
 - [ ] Implementar deleteApp in UserLoRaSimApp.
 - [ ] Testar deleteApp.

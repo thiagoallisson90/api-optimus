@@ -95,3 +95,42 @@ export const createApp: RequestHandler = async (
     });
   }
 };
+
+export const updateApp: RequestHandler = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    const { id } = req.params;
+    const app = req.body as IUserLoRaSimAppController;
+
+    const parse = userLoRaSimAppSchema.safeParse(app);
+    if (!parse.success) {
+      return res.status(404).json({
+        errors: parse.error.errors,
+      });
+    }
+
+    const idErrors = [
+      !mongoose.Types.ObjectId.isValid(id),
+      !mongoose.Types.ObjectId.isValid(app.userLoRaSim),
+    ];
+    if (idErrors[0] || idErrors[1]) {
+      return res.status(404).json({
+        success: false,
+        message: `Invalid ${idErrors[0] ? "App Id" : ""}${
+          idErrors[0] && idErrors[1] ? " and " : ""
+        }${idErrors[1] ? "LoRa Sim Id" : ""}!`,
+      });
+    }
+
+    await UserLoRaSimApp.findByIdAndUpdate(id, app, { new: true });
+
+    return res.status(200).json({ success: true, data: "App Updated!" });
+  } catch (error: any) {
+    if (process.env.NODE_ENV === "development") {
+      console.error(error.message);
+    }
+    return res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
