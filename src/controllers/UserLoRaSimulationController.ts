@@ -177,13 +177,40 @@ interface IUserLoRaSimController {
   numRep: number;
 }
 
-export const getUserLoRaSim: RequestHandler = async (
+export const getUserLoRaSims: RequestHandler = async (
   req: Request,
   res: Response
 ): Promise<any> => {
   try {
     const userLoRaSimulations = await UserLoRaSimulation.find({});
     return res.status(200).json({ success: true, data: userLoRaSimulations });
+  } catch (error: any) {
+    if (process.env.NODE_ENV === "development") {
+      console.log("Error in Fetching User LoRa Simulation:", error.message);
+    }
+    return res.status(500).json({
+      success: false,
+      message: "Server Error in Fetching User LoRa Simulation",
+    });
+  }
+};
+
+export const getUserLoRaSim: RequestHandler = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({
+        sucess: false,
+        message: "User LoRa Sim is invalid!",
+      });
+    }
+
+    const userLoRaSimulation = await UserLoRaSimulation.findById(id);
+    return res.status(200).json({ success: true, data: userLoRaSimulation });
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {
       console.log("Error in Fetching User LoRa Simulation:", error.message);

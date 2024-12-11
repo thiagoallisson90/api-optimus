@@ -13,3 +13,6 @@
 - [x] Implementar deleteApp in UserLoRaSimApp.
 - [x] Adicionar deleteApp a rota.
 - [x] Testar deleteApp.
+- [x] Implementar getUserLoRaSim in UserLoRaSimulation.
+- [x] Adicionar getUserLoRaSim a rota.
+- [x] Testar getUserLoRaSim.
