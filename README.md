@@ -19,3 +19,9 @@
 - [x] Implementar getUserLoRaSimByUser em UserLoRaSimulation.
 - [x] Adicionar getUserLoRaSimByUser a rota.
 - [x] Testar getUserLoRaSimByUser.
+- [x] Adicionar getProfileById em Profile.
+- [x] Adicionar getProfileById a rota.
+- [x] Testar getProfileById.
+- [ ] Adicionar getProfileByUser em Profile.
+- [ ] Adicionar getProfileByUser a rota.
+- [ ] Testar getProfileByUser.

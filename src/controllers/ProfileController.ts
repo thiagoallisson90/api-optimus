@@ -37,6 +37,32 @@ export const getProfiles: RequestHandler = async (
   }
 };
 
+export const getProfileById: RequestHandler = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({
+        success: false,
+        message: "Id is invalid!",
+      });
+    }
+
+    const profile = await Profile.findById(id);
+    return res.status(200).json({ success: true, data: profile });
+  } catch (error: any) {
+    if (process.env.NODE_ENV === "development") {
+      console.error(error.message);
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: "Server Error in Fetching Profile" });
+  }
+};
+
 export const createProfile: RequestHandler = async (
   req: Request,
   res: Response

@@ -204,7 +204,7 @@ export const getUserLoRaSimById: RequestHandler = async (
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(404).json({
-        sucess: false,
+        success: false,
         message: "User LoRa Sim is invalid!",
       });
     }
@@ -231,7 +231,7 @@ export const getUserLoRaSimByUser: RequestHandler = async (
 
     if (!mongoose.Types.ObjectId.isValid(user)) {
       return res.status(404).json({
-        sucess: false,
+        success: false,
         message: "User is invalid!",
       });
     }
