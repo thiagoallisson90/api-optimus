@@ -22,6 +22,6 @@
 - [x] Adicionar getProfileById em Profile.
 - [x] Adicionar getProfileById a rota.
 - [x] Testar getProfileById.
-- [ ] Adicionar getProfileByUser em Profile.
-- [ ] Adicionar getProfileByUser a rota.
-- [ ] Testar getProfileByUser.
+- [x] Adicionar getProfileByUser em Profile.
+- [x] Adicionar getProfileByUser a rota.
+- [x] Testar getProfileByUser.
