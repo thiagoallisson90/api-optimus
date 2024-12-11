@@ -4,15 +4,18 @@
 
 ### Data: 10.12.2024
 
-- [x] Implementar createApp in UserLoRaSimApp.
+- [x] Implementar createApp em UserLoRaSimApp.
 - [x] Adicionar createApp a rota.
 - [x] Testar createApp.
-- [x] Implementar updateApp in UserLoRaSimApp.
+- [x] Implementar updateApp em UserLoRaSimApp.
 - [x] Adicionar updateApp a rota.
 - [x] Testar updateApp.
-- [x] Implementar deleteApp in UserLoRaSimApp.
+- [x] Implementar deleteApp em UserLoRaSimApp.
 - [x] Adicionar deleteApp a rota.
 - [x] Testar deleteApp.
-- [x] Implementar getUserLoRaSimById in UserLoRaSimulation.
+- [x] Implementar getUserLoRaSimById em UserLoRaSimulation.
 - [x] Adicionar getUserLoRaSimById a rota.
 - [x] Testar getUserLoRaSimById.
+- [x] Implementar getUserLoRaSimByUser em UserLoRaSimulation.
+- [x] Adicionar getUserLoRaSimByUser a rota.
+- [x] Testar getUserLoRaSimByUser.

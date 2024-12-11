@@ -222,6 +222,35 @@ export const getUserLoRaSimById: RequestHandler = async (
   }
 };
 
+export const getUserLoRaSimByUser: RequestHandler = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    const { user } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(user)) {
+      return res.status(404).json({
+        sucess: false,
+        message: "User is invalid!",
+      });
+    }
+
+    const userLoRaSimulation = await UserLoRaSimulation.find({
+      user,
+    });
+    return res.status(200).json({ success: true, data: userLoRaSimulation });
+  } catch (error: any) {
+    if (process.env.NODE_ENV === "development") {
+      console.log("Error in Fetching User LoRa Simulation:", error.message);
+    }
+    return res.status(500).json({
+      success: false,
+      message: "Server Error in Fetching User LoRa Simulation",
+    });
+  }
+};
+
 export const createUserLoRaSim: RequestHandler = async (
   req: Request,
   res: Response
