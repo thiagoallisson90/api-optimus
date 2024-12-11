@@ -76,6 +76,12 @@ export const createApp: RequestHandler = async (
         .json({ success: false, message: parse.error.errors });
     }
 
+    if (!mongoose.Types.ObjectId.isValid(app.userLoRaSim)) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Invalid LoRa Sim Id!" });
+    }
+
     const newApp = await new UserLoRaSimApp(app).save();
     return res.status(201).json({ success: true, data: newApp._id });
   } catch (error: any) {
