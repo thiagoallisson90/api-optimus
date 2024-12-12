@@ -7,7 +7,7 @@
     "build": "tsup src --format esm",
     "start": "pm2 start dist/server.js",
     "stop": "pm2 stop dist/server.js",
-    "deploy": "npm install & npm run build & npm run stop & npm run start"
+    "deploy": "npm install && npm run build && npm run stop && npm run start"
   },
   "keywords": [],
   "author": "Thiago Allisson",
