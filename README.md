@@ -25,3 +25,9 @@
 - [x] Adicionar getProfileByUser em Profile.
 - [x] Adicionar getProfileByUser a rota.
 - [x] Testar getProfileByUser.
+
+### Data: 11.12.2024
+
+- [ ] Configurar mongo local.
+- [ ] Testar conexão local.
+- [ ] Testar conexão VPN.
