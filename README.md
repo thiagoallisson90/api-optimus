@@ -31,3 +31,7 @@
 - [x] Configurar mongo local.
 - [x] Testar conexão local.
 - [x] Testar conexão VPN.
+- [ ] Modelar sistema de autenticação.
+- [ ] Adicionar auth com JWT, Refresh Token e Cookies.
+- [ ] Testar auth local.
+- [ ] Testar auth VPS.
