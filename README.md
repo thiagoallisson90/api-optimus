@@ -28,6 +28,6 @@
 
 ### Data: 11.12.2024
 
-- [ ] Configurar mongo local.
-- [ ] Testar conexão local.
-- [ ] Testar conexão VPN.
+- [x] Configurar mongo local.
+- [x] Testar conexão local.
+- [x] Testar conexão VPN.

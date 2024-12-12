@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsup src --format esm",
-    "start": "node dist/server.js"
+    "start": "pm2 start dist/server.js",
+    "stop": "pm2 stop dist/server.js",
+    "deploy": "npm install & npm run build & npm run stop & npm run start"
   },
   "keywords": [],
   "author": "Thiago Allisson",
