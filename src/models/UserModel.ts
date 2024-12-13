@@ -1,7 +1,19 @@
 import mongoose from "mongoose";
 import { z } from "zod";
 
-const userSchema: mongoose.Schema = new mongoose.Schema(
+interface IUserModel extends mongoose.Document {
+  name: string;
+  email: {
+    type: string;
+    required: true;
+    unique: true;
+    validate: {};
+  };
+  password: string;
+  userType: string;
+}
+
+const userSchema: mongoose.Schema = new mongoose.Schema<IUserModel>(
   {
     name: {
       type: String,
@@ -49,6 +61,6 @@ const userSchema: mongoose.Schema = new mongoose.Schema(
   }
 );
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model<IUserModel>("User", userSchema);
 
 export default User;

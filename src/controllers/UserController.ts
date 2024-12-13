@@ -1,8 +1,8 @@
 import { Response, Request, RequestHandler } from "express";
 import User from "../models/UserModel.js";
 import { z } from "zod";
-import { hash } from "node:crypto";
 import mongoose from "mongoose";
+import { hash } from "node:crypto";
 
 const userSchema = z
   .object({
