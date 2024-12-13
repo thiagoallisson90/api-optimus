@@ -27,7 +27,7 @@ class AuthenticateUserUseCase {
       throw new Error("User or password incorrect!");
     }
 
-    const jwtSecret = process.env.JWT_TOKEN || "123@";
+    const jwtSecret = process.env.JWT_SECRET || "123@";
 
     // Generate user token
     return jwt.sign({ email, password }, jwtSecret, {
