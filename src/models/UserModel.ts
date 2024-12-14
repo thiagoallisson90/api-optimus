@@ -2,15 +2,10 @@ import mongoose from "mongoose";
 import { z } from "zod";
 
 interface IUserModel extends mongoose.Document {
-  name: string;
-  email: {
-    type: string;
-    required: true;
-    unique: true;
-    validate: {};
-  };
-  password: string;
-  userType: string;
+  name: any;
+  email: any;
+  password: any;
+  userType: any;
 }
 
 const userSchema: mongoose.Schema = new mongoose.Schema<IUserModel>(
