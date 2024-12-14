@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { z } from "zod";
 
-interface IUserModel extends mongoose.Document {
+export interface IUserModel extends mongoose.Document {
   name: any;
   email: any;
   password: any;

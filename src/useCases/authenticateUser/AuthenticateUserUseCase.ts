@@ -1,7 +1,7 @@
 import UserModel from "../../models/UserModel.js";
 import { hash } from "node:crypto";
-import jwt from "jsonwebtoken";
 import { GenerateRefreshToken } from "../../provider/GenerateRefreshToken.js";
+import { GenerateTokenProvider } from "../../provider/GenerateTokenProvider.js";
 
 interface IRequest {
   email: string;
@@ -28,18 +28,12 @@ class AuthenticateUserUseCase {
       throw new Error("User or password incorrect!");
     }
 
-    const jwtSecret = process.env.JWT_SECRET || "123@";
-
     // Generate user token
-    const token = jwt.sign({ email, password }, jwtSecret, {
-      subject: userAlreadyExist.password,
-      expiresIn: "20s",
-    });
+    const generateTokeProvider = new GenerateTokenProvider();
+    const token = await generateTokeProvider.execute(userAlreadyExist);
 
     const generateRefreshToken = new GenerateRefreshToken();
-    const refreshToken = await generateRefreshToken.execute(
-      userAlreadyExist?.id
-    );
+    const refreshToken = await generateRefreshToken.execute(userAlreadyExist);
 
     return { token, refreshToken };
   }
