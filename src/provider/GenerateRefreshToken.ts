@@ -9,11 +9,16 @@ class GenerateRefreshToken {
       throw new Error("User id is invalid!");
     }
 
-    const expiresIn = dayjs().add(20, "second").unix();
+    const expiresInForRefreshToken = process.env.EXPIRE_REFRESH_TOKEN
+      ? parseInt(process.env.EXPIRE_REFRESH_TOKEN)
+      : 30;
+
+    const expiresIn = dayjs().add(expiresInForRefreshToken, "second").unix();
 
     const refreshToken = await new RefreshToken({
       expiresIn,
       user,
+      /*userId: user.id,*/
     }).save();
 
     return refreshToken.id;

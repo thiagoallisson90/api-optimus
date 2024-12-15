@@ -8,6 +8,9 @@ import {
   updateUser,
 } from "../controllers/UserController.js";
 import { ensureAuthenticated } from "../middleware/ensureAuthenticated.js";
+import { RefreshTokenUserController } from "../useCases/refreshTokenUser/RefreshTokenUserController.js";
+
+const refreshTokenUserController = new RefreshTokenUserController();
 
 const router = express.Router();
 
@@ -16,6 +19,7 @@ router.get("/", getUsers);
 router.post("/", createUser);
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
+router.post("/refresh-token", refreshTokenUserController.handle);
 
 router.get("/simulation", ensureAuthenticated, (req, res) => {
   res.status(200).json([

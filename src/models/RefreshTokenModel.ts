@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 
 interface IRefreshTokenModel extends mongoose.Document {
-  expiresIn: {};
-  user: {};
+  expiresIn: any;
+  user: any;
+  //userId: any;
 }
 
 const refreshTokenSchema: mongoose.Schema =
@@ -16,6 +17,10 @@ const refreshTokenSchema: mongoose.Schema =
       ref: "User",
       required: ["true", "User is required!"],
     },
+    /*userId: {
+      type: String,
+      required: ["true", "User id is required!"],
+    },*/
   });
 
 const RefreshToken = mongoose.model<IRefreshTokenModel>(
