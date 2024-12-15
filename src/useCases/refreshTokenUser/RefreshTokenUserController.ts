@@ -8,11 +8,11 @@ class RefreshTokenUserController {
     };
 
     const refreshTokenUserUseCase = new RefreshTokenUserUseCase();
-    const { token, newRefreshToke } = await refreshTokenUserUseCase.execute(
+    const { token, refreshToken } = await refreshTokenUserUseCase.execute(
       refresh_token
     );
 
-    return res.json(token);
+    return res.status(200).json({ token, refreshToken });
   }
 }
 
