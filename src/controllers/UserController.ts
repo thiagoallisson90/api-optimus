@@ -156,6 +156,9 @@ export const deleteUser: RequestHandler = async (
     if (delUser) {
       return res.status(200).json({ success: true, message: "User deleted!" });
     } else {
+      /*const provider = new RemRefreshTokenProvider();
+      await provider.execute();*/
+
       return res
         .status(404)
         .json({ success: true, message: "User not found!" });

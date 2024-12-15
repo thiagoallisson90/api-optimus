@@ -9,22 +9,25 @@ import {
   updateUser,
 } from "../controllers/UserController.js";
 import { RefreshTokenUserController } from "../useCases/refreshTokenUser/RefreshTokenUserController.js";
-import { isAuthAsAdmin } from "../middleware/isAuthAsAdmin.js";
+import { isAuthAsAdmin } from "../middleware/user/isAuthAsAdmin.js";
+import { isAuthAsMember } from "../middleware/user/isAuthAsMember.js";
 
 const refreshTokenUserController = new RefreshTokenUserController();
 
 const router = express.Router();
 
-// Admin User
-router.get("/", isAuthAsAdmin, getUsers);
-
-// Admin or Member User
+// Without Auth
 router.post("/login", login);
 router.post("/logout", logout);
-
-router.post("/", createUser);
-router.put("/:id", updateUser);
-router.delete("/:id", deleteUser);
 router.post("/refresh-token", refreshTokenUserController.handle);
+router.post("/signup", createUser);
+
+// Admin Users
+router.get("/", isAuthAsAdmin, getUsers);
+router.post("/", isAuthAsAdmin, createUser);
+
+// Admin or Member Users
+router.put("/:id", isAuthAsMember, updateUser);
+router.delete("/:id", isAuthAsMember, deleteUser);
 
 export default router;
