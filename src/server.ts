@@ -28,6 +28,7 @@ app.use("/api/userlorasimapp", userLoRaSimAppRouter);
 app.use(
   (error: Error, req: Request, res: Response, next: NextFunction): any => {
     return res.status(500).json({
+      ok: false,
       status: "Error",
       message: error.message,
     });
@@ -36,7 +37,9 @@ app.use(
 
 app.use("/", (req: Request, res: Response): any => {
   return res.status(400).json({
-    error: "URL is invalid!",
+    ok: false,
+    status: "Error",
+    message: "URL is invalid!",
   });
 });
 

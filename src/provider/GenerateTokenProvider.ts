@@ -5,11 +5,11 @@ import { randomUUID } from "node:crypto";
 class GenerateTokenProvider {
   async execute(user: IUserModel) {
     const jwtSecret = process.env.JWT_SECRET || randomUUID();
-    const { id, email, userType } = user;
+    const { id, name, email, userType } = user;
 
     const expiresInForToken = process.env.EXPIRE_TOKEN || "1800";
 
-    const token = jwt.sign({ email, userType }, jwtSecret, {
+    const token = jwt.sign({ name, email, userType }, jwtSecret, {
       subject: id,
       expiresIn: `${expiresInForToken}s`,
     });

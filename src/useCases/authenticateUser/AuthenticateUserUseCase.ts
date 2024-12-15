@@ -35,7 +35,12 @@ class AuthenticateUserUseCase {
     const generateRefreshToken = new GenerateRefreshToken();
     const refreshToken = await generateRefreshToken.execute(userAlreadyExist);
 
-    return { token, refreshToken };
+    return {
+      name: userAlreadyExist.name,
+      email: userAlreadyExist.email,
+      refreshToken,
+      token,
+    };
   }
 }
 

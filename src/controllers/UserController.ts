@@ -182,9 +182,12 @@ export const login: RequestHandler = async (
 
   const auth = new AuthenticateUserUseCase();
 
-  const token = await auth.execute({ email, password });
+  const { name, refreshToken, token } = await auth.execute({ email, password });
 
   return res.status(200).json({
+    ok: true,
+    name,
+    refreshToken,
     token,
   });
 };
@@ -202,11 +205,14 @@ export const logout: RequestHandler = async (
 
   if (result) {
     return res.status(200).json({
+      ok: true,
       message: "Logout executed successfully!",
     });
   }
 
   return res.status(500).json({
+    ok: false,
+    status: "Error",
     message: "Error when logging out!",
   });
 };
