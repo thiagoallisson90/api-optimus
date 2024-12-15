@@ -1,14 +1,17 @@
 import jwt from "jsonwebtoken";
 import { IUserModel } from "../models/UserModel.js";
+import { randomUUID } from "node:crypto";
 
 class GenerateTokenProvider {
   async execute(user: IUserModel) {
-    const jwtSecret = process.env.JWT_SECRET || "123@";
-    const { id, email, password } = user;
+    const jwtSecret = process.env.JWT_SECRET || randomUUID();
+    const { id, email, userType } = user;
 
-    const token = jwt.sign({ email, password }, jwtSecret, {
+    const expiresInForToken = process.env.EXPIRE_TOKEN || "1800";
+
+    const token = jwt.sign({ email, userType }, jwtSecret, {
       subject: id,
-      expiresIn: "20s",
+      expiresIn: `${expiresInForToken}s`,
     });
 
     return token;

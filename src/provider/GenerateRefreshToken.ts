@@ -11,17 +11,30 @@ class GenerateRefreshToken {
 
     const expiresInForRefreshToken = process.env.EXPIRE_REFRESH_TOKEN
       ? parseInt(process.env.EXPIRE_REFRESH_TOKEN)
-      : 30;
+      : 24 * 60 * 60;
 
     const expiresIn = dayjs().add(expiresInForRefreshToken, "second").unix();
 
-    const refreshToken = await new RefreshToken({
-      expiresIn,
-      user,
-      /*userId: user.id,*/
-    }).save();
+    const session = await RefreshToken.startSession();
+    try {
+      session.startTransaction();
 
-    return refreshToken.id;
+      await RefreshToken.deleteMany({ user: user._id });
+
+      const refreshToken = await new RefreshToken({
+        expiresIn,
+        user,
+        /*userId: user.id,*/
+      }).save();
+
+      await session.commitTransaction();
+
+      return refreshToken.id;
+    } catch (error) {
+      throw new Error("Error to generate refresh token!");
+    } finally {
+      await session.endSession();
+    }
   }
 }
 

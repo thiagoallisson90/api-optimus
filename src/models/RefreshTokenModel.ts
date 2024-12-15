@@ -7,21 +7,26 @@ interface IRefreshTokenModel extends mongoose.Document {
 }
 
 const refreshTokenSchema: mongoose.Schema =
-  new mongoose.Schema<IRefreshTokenModel>({
-    expiresIn: {
-      type: Number,
-      required: [true, "Expires In is required!"],
-    },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: ["true", "User is required!"],
-    },
-    /*userId: {
+  new mongoose.Schema<IRefreshTokenModel>(
+    {
+      expiresIn: {
+        type: Number,
+        required: [true, "Expires In is required!"],
+      },
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: ["true", "User is required!"],
+      },
+      /*userId: {
       type: String,
       required: ["true", "User id is required!"],
     },*/
-  });
+    },
+    {
+      timestamps: true, // Adiciona createdAt e updatedAt automaticamente
+    }
+  );
 
 const RefreshToken = mongoose.model<IRefreshTokenModel>(
   "RefreshToken",
