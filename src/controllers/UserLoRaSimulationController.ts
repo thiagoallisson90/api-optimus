@@ -70,9 +70,9 @@ const userLoRaSimSchema = z
       .gt(0, {
         message: "Number of Gateways must be greater than 0!",
       }),
-    gwCoords: z.string({
+    /*gwCoords: z.string({
       required_error: "Gateway's coordinates are required!",
-    }),
+    }),*/
     bw: z.coerce.number({
       required_error: "Bandwidth is required!",
     }),
@@ -122,7 +122,11 @@ const userLoRaSimSchema = z
       required_error: "Number of Repetitions is required!",
     }),
   })
-  .refine(
+  .refine((data) => data.ackPerc + data.nackPerc === 100, {
+    message: "The sum of ackPerc and nackPerc must be equal to 100%",
+    path: ["opMode"],
+  });
+/*.refine(
     (data) => {
       const coords: string[] = data.gwCoords.split(";");
       if (coords.length < data.numGWs) {
@@ -136,7 +140,7 @@ const userLoRaSimSchema = z
       path: ["gwCoords"],
     }
   )
-  /*.refine(
+  .refine(
     (data) => {
       const coords: string[] = data.edCoords.split(";");
       if (coords.length < data.numEDs) {
@@ -150,10 +154,6 @@ const userLoRaSimSchema = z
       path: ["edCoords"],
     }
   )*/
-  .refine((data) => data.ackPerc + data.nackPerc === 100, {
-    message: "The sum of ackPerc and nackPerc must be equal to 100%",
-    path: ["opMode"],
-  });
 
 interface IUserLoRaSimController {
   name: string;
@@ -265,9 +265,9 @@ export const createUserLoRaSim: RequestHandler = async (
         .json({ success: false, message: parse.error.errors });
     }
 
-    createFolder("files");
+    //createFolder("files");
 
-    userLoRaSim.gwCoords = saveCoords(userLoRaSim.gwCoords, "gwCoords");
+    //userLoRaSim.gwCoords = saveCoords(userLoRaSim.gwCoords, "gwCoords");
     //userLoRaSim.edCoords = saveCoords(userLoRaSim.edCoords, "edCoords");
 
     const newSim = await new UserLoRaSimulation(userLoRaSim).save();
@@ -312,12 +312,12 @@ export const updateUserLoRaSim: RequestHandler = async (
 
     const document = await UserLoRaSimulation.findById(id).exec();
 
-    if (userLoRaSim.gwCoords) {
+    /*if (userLoRaSim.gwCoords) {
       userLoRaSim.gwCoords = saveCoords(userLoRaSim.gwCoords, "gwCoords");
       if (document) {
         delCoords(document.gwCoords);
       }
-    }
+    }*/
 
     /*if (userLoRaSim.edCoords) {
       userLoRaSim.edCoords = saveCoords(userLoRaSim.edCoords, "edCoords");

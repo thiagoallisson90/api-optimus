@@ -17,7 +17,7 @@ const userLoRaSimAppSchema: mongoose.Schema =
     },
     userLoRaSim: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "UserLoRaSimulation",
       required: [true, "UserLoRaSim is required!"],
     },
   });

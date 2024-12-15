@@ -7,7 +7,7 @@ interface IUserLoRaSimModel extends mongoose.Document {
   yDim: number;
   simTime: number;
   numGWs: number;
-  gwCoords: string;
+  //gwCoords: string;
   bw: number;
   freq: number;
   numEDs: number;
@@ -67,10 +67,10 @@ const userLoRaSimulationSchema: mongoose.Schema =
           message: "Number of gateways must be greater than 0!",
         },
       },
-      gwCoords: {
+      /*gwCoords: {
         type: String,
         required: [true, "Gateway's coordinates are required!"],
-      },
+      },*/
       bw: {
         type: Number,
         required: [true, "Bandwidth is required!"],
