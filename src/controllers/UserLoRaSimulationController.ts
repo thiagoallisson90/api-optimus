@@ -121,6 +121,10 @@ const userLoRaSimSchema = z
     numRep: z.coerce.number({
       required_error: "Number of Repetitions is required!",
     }),
+    app: z.enum(["OneShot", "Periodic", "Poisson"], {
+      required_error: "Application is required!",
+      message: "Application is not supported!",
+    }),
   })
   .refine((data) => data.ackPerc + data.nackPerc === 100, {
     message: "The sum of ackPerc and nackPerc must be equal to 100%",

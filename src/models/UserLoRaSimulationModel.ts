@@ -20,6 +20,7 @@ interface IUserLoRaSimModel extends mongoose.Document {
   shadowingModel: boolean;
   user: mongoose.Schema.Types.ObjectId;
   numRep: number;
+  app: string;
 }
 
 const userLoRaSimulationSchema: mongoose.Schema =
@@ -137,6 +138,14 @@ const userLoRaSimulationSchema: mongoose.Schema =
       numRep: {
         type: Number,
         required: [true, "Number of Repetitions is required!"],
+      },
+      app: {
+        type: String,
+        required: true,
+        enum: {
+          values: ["OneShot", "Periodic", "Poisson"],
+          message: "Application is not supported!",
+        },
       },
     },
     {
