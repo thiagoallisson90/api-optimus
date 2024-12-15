@@ -2,12 +2,18 @@ import dayjs from "dayjs";
 import RefreshToken from "../models/RefreshTokenModel.js";
 import { IUserModel } from "../models/UserModel.js";
 import mongoose from "mongoose";
+import { isExpired } from "../utils/isExpired.js";
 
 class GenerateRefreshToken {
   async execute(user: IUserModel) {
     if (!mongoose.Types.ObjectId.isValid(user.id)) {
       throw new Error("User id is invalid!");
     }
+
+    /*const refreshFound = await RefreshToken.findOne({ user: user._id });
+    if (refreshFound && !isExpired(refreshFound.expiresIn)) {
+      return refreshFound.id;
+    }*/
 
     const expiresInForRefreshToken = process.env.EXPIRE_REFRESH_TOKEN
       ? parseInt(process.env.EXPIRE_REFRESH_TOKEN)
