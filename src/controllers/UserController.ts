@@ -4,6 +4,7 @@ import { z } from "zod";
 import mongoose from "mongoose";
 import { hash } from "node:crypto";
 import { AuthenticateUserUseCase } from "../useCases/authenticateUser/AuthenticateUserUseCase.js";
+import { RemRefreshTokenProvider } from "../provider/RemRefreshTokenProvider.js";
 
 const userSchema = z
   .object({
@@ -182,5 +183,27 @@ export const login: RequestHandler = async (
 
   return res.status(200).json({
     token,
+  });
+};
+
+export const logout: RequestHandler = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  const { refreshToken } = req.body as {
+    refreshToken: string;
+  };
+
+  const remRefreshTokenProvider = new RemRefreshTokenProvider();
+  const result = await remRefreshTokenProvider.execute(refreshToken);
+
+  if (result) {
+    return res.status(200).json({
+      message: "Logout executed successfully!",
+    });
+  }
+
+  return res.status(500).json({
+    message: "Error when logging out!",
   });
 };

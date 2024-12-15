@@ -5,12 +5,13 @@ import {
   deleteUser,
   getUsers,
   login,
+  logout,
   updateUser,
 } from "../controllers/UserController.js";
-//import { RefreshTokenUserController } from "../useCases/refreshTokenUser/RefreshTokenUserController.js";
+import { RefreshTokenUserController } from "../useCases/refreshTokenUser/RefreshTokenUserController.js";
 import { isAuthAsAdmin } from "../middleware/isAuthAsAdmin.js";
 
-// const refreshTokenUserController = new RefreshTokenUserController();
+const refreshTokenUserController = new RefreshTokenUserController();
 
 const router = express.Router();
 
@@ -19,30 +20,11 @@ router.get("/", isAuthAsAdmin, getUsers);
 
 // Admin or Member User
 router.post("/login", login);
+router.post("/logout", logout);
+
 router.post("/", createUser);
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
-/*router.post("/refresh-token", refreshTokenUserController.handle);
-
-router.get("/simulation", ensureAuthenticated, (req, res) => {
-  res.status(200).json([
-    {
-      id: 1,
-      name: "NodeJS",
-    },
-    {
-      id: 2,
-      name: "ReactJS",
-    },
-    {
-      id: 3,
-      name: "React Native",
-    },
-    {
-      id: 4,
-      name: "Elixir",
-    },
-  ]);
-});*/
+router.post("/refresh-token", refreshTokenUserController.handle);
 
 export default router;
