@@ -231,25 +231,27 @@ export const getUserLoRaSimByUser: RequestHandler = async (
   res: Response
 ): Promise<any> => {
   try {
-    const { user } = req.params;
+    const { email } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(user)) {
+    const schema = z.string().email();
+
+    if (!schema.safeParse(email).success) {
       return res.status(404).json({
-        success: false,
-        message: "User is invalid!",
+        ok: false,
+        message: "E-mail is invalid!",
       });
     }
 
     const userLoRaSimulation = await UserLoRaSimulation.find({
-      user,
+      email,
     });
-    return res.status(200).json({ success: true, data: userLoRaSimulation });
+    return res.status(200).json({ ok: true, message: userLoRaSimulation });
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {
       console.log("Error in Fetching User LoRa Simulation:", error.message);
     }
     return res.status(500).json({
-      success: false,
+      ok: false,
       message: "Server Error in Fetching User LoRa Simulation",
     });
   }

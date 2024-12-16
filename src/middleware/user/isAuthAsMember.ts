@@ -12,6 +12,7 @@ export const isAuthAsMember: RequestHandler = (
 
   if (!authToken) {
     return res.status(401).json({
+      ok: false,
       message: "Unauthorized, token is missing!",
     });
   }
@@ -21,6 +22,7 @@ export const isAuthAsMember: RequestHandler = (
   try {
     const jwtSecret = process.env.JWT_SECRET || "123@";
     const payload = jwt.verify(token, jwtSecret) as {
+      name: string;
       email: string;
       userType: string;
       iat: number;
@@ -32,8 +34,9 @@ export const isAuthAsMember: RequestHandler = (
       payload.userType === "Member" &&
       operationsToCheckForMember.indexOf(req.method) !== -1
     ) {
-      if (req.params.id !== payload.sub) {
+      if (req.params.email !== payload.email) {
         return res.status(401).json({
+          ok: false,
           message: "Unauthorized, user with access denied!",
         });
       }
@@ -42,6 +45,7 @@ export const isAuthAsMember: RequestHandler = (
     return next();
   } catch (error) {
     return res.status(401).json({
+      ok: false,
       message: "Unauthorized, token invalid!",
     });
   }

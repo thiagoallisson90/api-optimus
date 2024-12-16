@@ -16,11 +16,11 @@ const router = express.Router();
 
 router.get("/", isAuthAsAdmin, getUserLoRaSims);
 
-router.get("/:id", isAuthAsMember, getUserLoRaSimById);
-router.put("/:id", isAuthAsMember, updateUserLoRaSim);
-router.delete("/:id", isAuthAsMember, deleteUserLoRaSim);
+router.get("/:id", getUserLoRaSimById);
+router.put("/:id", updateUserLoRaSim);
+router.delete("/:id", deleteUserLoRaSim);
 
-router.get("/user/:user", isAuthAsMember, getUserLoRaSimByUser);
+router.get("/user/:email", getUserLoRaSimByUser);
 
 router.post("/", isAuth, createUserLoRaSim);
 

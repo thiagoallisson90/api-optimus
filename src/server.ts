@@ -22,8 +22,8 @@ app.use(cors());
 
 app.use("/api/user", userRouter);
 app.use("/api/profile", profileRouter);
-app.use("/api/userlorasim", userLoRaSimRouter);
-app.use("/api/userlorasimapp", userLoRaSimAppRouter);
+app.use("/api/simulation", userLoRaSimRouter);
+//app.use("/api/userlorasimapp", userLoRaSimAppRouter);
 
 app.use(
   (error: Error, req: Request, res: Response, next: NextFunction): any => {
