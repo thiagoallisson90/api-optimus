@@ -83,8 +83,8 @@ export const createUser: RequestHandler = async (
     user.password = hashPassword(user.password);
     const { confirmPassword, ...userWithoutConfirmPass } = user;
 
-    const newUser = await new User(userWithoutConfirmPass).save();
-    return res.status(201).json({ success: true, data: newUser._id });
+    await new User(userWithoutConfirmPass).save();
+    return res.status(201).json({ success: true });
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {
       console.error("Error in Create User:", error.message);
@@ -180,16 +180,24 @@ export const login: RequestHandler = async (
     password: string;
   };
 
-  const auth = new AuthenticateUserUseCase();
+  try {
+    const auth = new AuthenticateUserUseCase();
 
-  const { name, token } = await auth.execute({ email, password });
+    const { name, token } = await auth.execute({ email, password });
 
-  return res.status(200).json({
-    ok: true,
-    name,
-    //refreshToken,
-    token,
-  });
+    return res.status(200).json({
+      ok: true,
+      name,
+      //refreshToken,
+      token,
+    });
+  } catch (error: any) {
+    console.log("Error");
+    return res.status(400).json({
+      ok: false,
+      message: "E-mail ou password incorrect!",
+    });
+  }
 };
 
 export const logout: RequestHandler = async (
