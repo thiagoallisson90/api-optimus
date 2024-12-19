@@ -198,8 +198,6 @@ export const logout: RequestHandler = async (
 ): Promise<any> => {
   const { email } = req.body;
 
-  console.log(email);
-
   const user = await User.findOne({ email });
 
   if (user) {
