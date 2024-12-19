@@ -101,7 +101,7 @@ export const updateUser: RequestHandler = async (
   res: Response
 ): Promise<any> => {
   try {
-    const { id } = req.params;
+    const { email } = req.params;
     const user = req.body as {
       name: string;
       email: string;
@@ -121,13 +121,13 @@ export const updateUser: RequestHandler = async (
     user.password = hashPassword(user.password);
     const { confirmPassword, ...userWithoutConfirmPass } = user;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    /*if (!mongoose.Types.ObjectId.isValid(id)) {
       return res
         .status(404)
         .json({ success: false, message: "Invalid User Id!" });
-    }
+    }*/
 
-    await User.findByIdAndUpdate(id, userWithoutConfirmPass, {
+    await User.findOneAndUpdate({ email }, userWithoutConfirmPass, {
       new: true,
     });
     return res.status(200).json({ success: true, data: "User Updated!" });
@@ -182,12 +182,12 @@ export const login: RequestHandler = async (
 
   const auth = new AuthenticateUserUseCase();
 
-  const { name, refreshToken, token } = await auth.execute({ email, password });
+  const { name, token } = await auth.execute({ email, password });
 
   return res.status(200).json({
     ok: true,
     name,
-    refreshToken,
+    //refreshToken,
     token,
   });
 };
@@ -196,14 +196,13 @@ export const logout: RequestHandler = async (
   req: Request,
   res: Response
 ): Promise<any> => {
-  const { refreshToken } = req.body as {
-    refreshToken: string;
-  };
+  const { email } = req.body;
 
-  const remRefreshTokenProvider = new RemRefreshTokenProvider();
-  const result = await remRefreshTokenProvider.execute(refreshToken);
+  console.log(email);
 
-  if (result) {
+  const user = await User.findOne({ email });
+
+  if (user) {
     return res.status(200).json({
       ok: true,
       message: "Logout executed successfully!",

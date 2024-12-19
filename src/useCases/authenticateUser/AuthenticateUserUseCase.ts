@@ -32,13 +32,13 @@ class AuthenticateUserUseCase {
     const generateTokeProvider = new GenerateTokenProvider();
     const token = await generateTokeProvider.execute(userAlreadyExist);
 
-    const generateRefreshToken = new GenerateRefreshToken();
-    const refreshToken = await generateRefreshToken.execute(userAlreadyExist);
+    /*const generateRefreshToken = new GenerateRefreshToken();
+    const refreshToken = await generateRefreshToken.execute(userAlreadyExist);*/
 
     return {
       name: userAlreadyExist.name,
       email: userAlreadyExist.email,
-      refreshToken,
+      //refreshToken,
       token,
     };
   }

@@ -18,7 +18,6 @@ const router = express.Router();
 
 // Without Auth
 router.post("/login", login);
-router.post("/logout", logout);
 router.post("/refresh-token", refreshTokenUserController.handle);
 router.post("/signup", createUser);
 
@@ -27,7 +26,8 @@ router.get("/", isAuthAsAdmin, getUsers);
 router.post("/", isAuthAsAdmin, createUser);
 
 // Admin or Member Users
-router.put("/:id", isAuthAsMember, updateUser);
-router.delete("/:id", isAuthAsMember, deleteUser);
+router.put("/:email", isAuthAsMember, updateUser);
+router.delete("/:email", isAuthAsMember, deleteUser);
+router.post("/logout", isAuthAsMember, logout);
 
 export default router;

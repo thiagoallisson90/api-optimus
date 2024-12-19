@@ -1,8 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import jwt from "jsonwebtoken";
 
-const operationsToCheckForMember = ["DELETE", "GET", "PUT"];
-
 export const isAuthAsMember: RequestHandler = (
   req: Request,
   res: Response,
@@ -30,11 +28,10 @@ export const isAuthAsMember: RequestHandler = (
       sub: string;
     };
 
-    if (
-      payload.userType === "Member" &&
-      operationsToCheckForMember.indexOf(req.method) !== -1
-    ) {
-      if (req.params.email !== payload.email) {
+    const { email } = req.body;
+
+    if (payload.userType === "Member") {
+      if (email !== payload.email) {
         return res.status(401).json({
           ok: false,
           message: "Unauthorized, user with access denied!",
