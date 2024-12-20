@@ -3,6 +3,7 @@ import { z } from "zod";
 import mongoose from "mongoose";
 import UserLoRaSimulation from "../models/UserLoRaSimulationModel.js";
 import { createFolder, delCoords, saveCoords } from "../utils/file.js";
+import User from "../models/UserModel.js";
 
 const verifyCoords = (coords: string[]): boolean => {
   const test: boolean[] = coords.map((coord) => {
@@ -33,28 +34,17 @@ const verifyCoords = (coords: string[]): boolean => {
 
 const userLoRaSimSchema = z
   .object({
-    name: z.string({
-      required_error: "Name is required!",
+    title: z.string({
+      required_error: "Title is required!",
     }),
     description: z
       .string({
         required_error: "Description is required!",
       })
       .optional(),
-    xDim: z.coerce
-      .number({
-        required_error: "X-dimension is required!",
-      })
-      .gt(0, {
-        message: "X-dimension must be greater than 0!",
-      }),
-    yDim: z.coerce
-      .number({
-        required_error: "Y-dimension is required!",
-      })
-      .gt(0, {
-        message: "Y-dimension be greater than 0!",
-      }),
+    simArea: z.string({
+      required_error: "Simulation area is required!",
+    }),
     simTime: z.coerce
       .number({
         required_error: "Simulation Time is required!",
@@ -62,7 +52,7 @@ const userLoRaSimSchema = z
       .gt(0, {
         message: "Simulation time must be greater than 0!",
       }),
-    numGWs: z.coerce
+    gatewayCount: z.coerce
       .number({
         required_error: "Number of Gateways is required!",
       })
@@ -70,16 +60,13 @@ const userLoRaSimSchema = z
       .gt(0, {
         message: "Number of Gateways must be greater than 0!",
       }),
-    /*gwCoords: z.string({
-      required_error: "Gateway's coordinates are required!",
-    }),*/
-    bw: z.coerce.number({
+    bandwidth: z.coerce.number({
       required_error: "Bandwidth is required!",
     }),
-    freq: z.coerce.number({
+    frequency: z.coerce.number({
       required_error: "Frequency is required!",
     }),
-    numEDs: z.coerce
+    edCount: z.coerce
       .number({
         required_error: "Number of EDs is required!",
       })
@@ -87,9 +74,6 @@ const userLoRaSimSchema = z
       .gt(0, {
         message: "Number of EDs must be greater than 0!",
       }),
-    /*edCoords: z.string({
-      required_error: "ED's coordinates are required!",
-    }),*/
     edClass: z.enum(["A", "B", "C"], {
       required_error: "ED's Class is required!",
       message: "ED Class is not supported!",
@@ -108,7 +92,7 @@ const userLoRaSimSchema = z
         required_error: "ACK Percentage is required!",
       })
       .gte(0),
-    lossModel: z.enum(["Okumura-Hata", "LogDistance"], {
+    lossModel: z.enum(["okumura", "log"], {
       required_error: "Loss Propagation Model is required!",
       message: "Loss Propagation model is not supported!",
     }),
@@ -118,67 +102,40 @@ const userLoRaSimSchema = z
     user: z.string({
       required_error: "User is required!",
     }),
-    numRep: z.coerce.number({
-      required_error: "Number of Repetitions is required!",
-    }),
-    app: z.enum(["OneShot", "Periodic", "Poisson"], {
+    appType: z.enum(["one", "uniform", "poisson"], {
       required_error: "Application is required!",
       message: "Application is not supported!",
+    }),
+    appPayload: z.coerce.number({
+      required_error: "Application payload is required!",
     }),
   })
   .refine((data) => data.ackPerc + data.nackPerc === 100, {
     message: "The sum of ackPerc and nackPerc must be equal to 100%",
     path: ["opMode"],
   });
-/*.refine(
-    (data) => {
-      const coords: string[] = data.gwCoords.split(";");
-      if (coords.length < data.numGWs) {
-        return false;
-      }
-
-      return verifyCoords(coords);
-    },
-    {
-      message: "GW's coordinates are invalid!",
-      path: ["gwCoords"],
-    }
-  )
-  .refine(
-    (data) => {
-      const coords: string[] = data.edCoords.split(";");
-      if (coords.length < data.numEDs) {
-        return false;
-      }
-
-      return verifyCoords(coords);
-    },
-    {
-      message: "ED's coordinates are invalid!",
-      path: ["edCoords"],
-    }
-  )*/
 
 interface IUserLoRaSimController {
-  name: string;
-  description?: string;
-  xDim: number;
-  yDim: number;
-  simTime: number;
-  numGWs: number;
-  gwCoords: string;
-  bw: number;
-  freq: number;
-  numEDs: number;
-  //edCoords: string;
-  edClass: string;
-  opMode: string;
-  nackPerc: number;
-  ackPerc: number;
-  lossModel: string;
-  shadowingModel: boolean;
-  user: string;
-  numRep: number;
+  email: string;
+  data: {
+    ackPerc: number;
+    appPayload: number;
+    appType: string;
+    bandwidth: number;
+    description: string;
+    edClass: string;
+    edCount: number;
+    frequency: number;
+    gatewayCount: number;
+    lossModel: string;
+    nackPerc: number;
+    opMode: string;
+    shadowingModel: string | boolean;
+    simArea: string;
+    simTime: number;
+    title: string;
+    user?: string | object;
+  };
 }
 
 export const getUserLoRaSims: RequestHandler = async (
@@ -264,19 +221,27 @@ export const createUserLoRaSim: RequestHandler = async (
   try {
     const userLoRaSim = req.body as IUserLoRaSimController;
 
-    const parse = userLoRaSimSchema.safeParse(userLoRaSim);
-    if (!parse.success) {
+    const { email, data } = userLoRaSim;
+
+    data.shadowingModel = userLoRaSim.data.shadowingModel != "";
+    const user = await User.findOne({ email });
+
+    if (!user) {
       return res
-        .status(404)
+        .status(400)
+        .json({ success: false, message: "User not found!" });
+    }
+
+    data.user = user.id;
+    const parse = userLoRaSimSchema.safeParse(data);
+    if (!parse.success) {
+      console.log(parse.error.errors);
+      return res
+        .status(400)
         .json({ success: false, message: parse.error.errors });
     }
 
-    //createFolder("files");
-
-    //userLoRaSim.gwCoords = saveCoords(userLoRaSim.gwCoords, "gwCoords");
-    //userLoRaSim.edCoords = saveCoords(userLoRaSim.edCoords, "edCoords");
-
-    const newSim = await new UserLoRaSimulation(userLoRaSim).save();
+    const newSim = await new UserLoRaSimulation(data).save();
     return res.status(201).json({ success: true, data: newSim._id });
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {

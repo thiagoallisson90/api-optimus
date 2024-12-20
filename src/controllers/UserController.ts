@@ -192,7 +192,6 @@ export const login: RequestHandler = async (
       token,
     });
   } catch (error: any) {
-    console.log("Error");
     return res.status(400).json({
       ok: false,
       message: "E-mail ou password incorrect!",

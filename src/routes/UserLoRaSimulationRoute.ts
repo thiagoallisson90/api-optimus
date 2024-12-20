@@ -19,9 +19,9 @@ router.get("/", isAuthAsAdmin, getUserLoRaSims);
 router.get("/:id", getUserLoRaSimById);
 router.put("/:id", updateUserLoRaSim);
 router.delete("/:id", deleteUserLoRaSim);
-
 router.get("/user/:email", getUserLoRaSimByUser);
 
+// Here
 router.post("/", isAuth, createUserLoRaSim);
 
 export default router;
