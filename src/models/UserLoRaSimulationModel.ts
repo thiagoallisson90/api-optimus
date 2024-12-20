@@ -18,6 +18,7 @@ interface IUserLoRaSimModel extends mongoose.Document {
   simTime: number;
   title: string;
   user: mongoose.Schema.Types.ObjectId;
+  status?: string;
 }
 
 const userLoRaSimulationSchema: mongoose.Schema =
@@ -131,6 +132,10 @@ const userLoRaSimulationSchema: mongoose.Schema =
       appPayload: {
         type: Number,
         required: [true, "Application Payload is required!"],
+      },
+      status: {
+        type: String,
+        default: "simulating",
       },
     },
     {
