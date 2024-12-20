@@ -1,39 +1,36 @@
 import mongoose from "mongoose";
 
 interface IUserLoRaSimModel extends mongoose.Document {
-  name: string;
-  description?: string;
-  xDim: number;
-  yDim: number;
-  simTime: number;
-  numGWs: number;
-  //gwCoords: string;
-  bw: number;
-  freq: number;
-  numEDs: number;
-  //edCoords: string;
-  edClass: string;
-  opMode: string;
-  nackPerc: number;
   ackPerc: number;
+  appPayload: number;
+  appType: string;
+  bandwidth: number;
+  description: string;
+  edClass: string;
+  edCount: number;
+  frequency: number;
+  gatewayCount: number;
   lossModel: string;
-  shadowingModel: boolean;
+  nackPerc: number;
+  opMode: string;
+  shadowingModel: string | boolean;
+  simArea: string;
+  simTime: number;
+  title: string;
   user: mongoose.Schema.Types.ObjectId;
-  numRep: number;
-  app: string;
 }
 
 const userLoRaSimulationSchema: mongoose.Schema =
   new mongoose.Schema<IUserLoRaSimModel>(
     {
-      name: {
+      title: {
         type: String,
-        required: [true, "Name is required!"],
+        required: [true, "Title is required!"],
         validate: {
           validator: (name: string): boolean => {
-            return /^[a-zA-ZÀ-ÿ\s']{3,}$/.test(name);
+            return name.length >= 3;
           },
-          message: "Name must contain at least 3 or more characters.",
+          message: "Title must contain at least 3 or more characters.",
         },
       },
       description: {
@@ -41,24 +38,20 @@ const userLoRaSimulationSchema: mongoose.Schema =
         required: false,
         validate: {
           validator: (description: string): boolean => {
-            return /^[a-zA-ZÀ-ÿ\s']{3,}$/.test(description);
+            return description.length >= 3;
           },
           message: "Description must contain at least 3 or more characters.",
         },
       },
-      xDim: {
-        type: Number,
-        required: [true, "X-dimension is required!"],
-      },
-      yDim: {
-        type: Number,
-        required: [true, "Y-dimension is required!"],
+      simArea: {
+        type: String,
+        required: [true, "Simulation area is required!"],
       },
       simTime: {
         type: Number,
         required: [true, "Simulation time is required!"],
       },
-      numGWs: {
+      gatewayCount: {
         type: Number,
         required: [true, "Number of Gateways is required!"],
         validate: {
@@ -68,19 +61,15 @@ const userLoRaSimulationSchema: mongoose.Schema =
           message: "Number of gateways must be greater than 0!",
         },
       },
-      /*gwCoords: {
-        type: String,
-        required: [true, "Gateway's coordinates are required!"],
-      },*/
-      bw: {
+      bandwidth: {
         type: Number,
         required: [true, "Bandwidth is required!"],
       },
-      freq: {
+      frequency: {
         type: Number,
         required: [true, "Frequency is required!"],
       },
-      numEDs: {
+      edCount: {
         type: Number,
         required: [true, "Number of EDs is required!"],
         validate: {
@@ -90,10 +79,6 @@ const userLoRaSimulationSchema: mongoose.Schema =
           message: "Number of EDs must be greater than 0!",
         },
       },
-      /*edCoords: {
-        type: String,
-        required: [true, "ED's coordinates are required!"],
-      },*/
       edClass: {
         type: String,
         required: true,
@@ -122,7 +107,7 @@ const userLoRaSimulationSchema: mongoose.Schema =
         type: String,
         required: true,
         enum: {
-          values: ["Okumura-Hata", "LogDistance"],
+          values: ["okumura", "log"],
           message: "Path Loss Model is invalid!",
         },
       },
@@ -135,17 +120,17 @@ const userLoRaSimulationSchema: mongoose.Schema =
         ref: "User",
         required: [true, "User is required!"],
       },
-      numRep: {
-        type: Number,
-        required: [true, "Number of Repetitions is required!"],
-      },
-      app: {
+      appType: {
         type: String,
         required: true,
         enum: {
-          values: ["OneShot", "Periodic", "Poisson"],
+          values: ["one", "uniform", "poisson"],
           message: "Application is not supported!",
         },
+      },
+      appPayload: {
+        type: Number,
+        required: [true, "Application Payload is required!"],
       },
     },
     {
