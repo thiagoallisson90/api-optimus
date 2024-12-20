@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import UserLoRaSimulation from "../models/UserLoRaSimulationModel.js";
 import { createFolder, delCoords, saveCoords } from "../utils/file.js";
 import User from "../models/UserModel.js";
+import path from "path";
 
 const verifyCoords = (coords: string[]): boolean => {
   const test: boolean[] = coords.map((coord) => {
@@ -242,6 +243,16 @@ export const createUserLoRaSim: RequestHandler = async (
     }
 
     const newSim = await new UserLoRaSimulation(data).save();
+
+    const folder1 = `files${path.sep}${user.id}`;
+    createFolder(folder1);
+    const folder2 = `${folder1}${path.sep}${newSim.id}`;
+    createFolder(folder2);
+    const folder3 = `${folder2}${path.sep}imgs`;
+    createFolder(folder3);
+    const folder4 = `${folder2}${path.sep}data`;
+    createFolder(folder4);
+
     return res.status(201).json({ success: true, data: newSim._id });
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {
