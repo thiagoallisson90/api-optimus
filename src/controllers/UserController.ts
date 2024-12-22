@@ -90,6 +90,8 @@ export const createUser: RequestHandler = async (
       console.error("Error in Create User:", error.message);
     }
 
+    console.log(error.message);
+
     return res
       .status(500)
       .json({ success: false, message: "Error in Create User!" });

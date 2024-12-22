@@ -15,7 +15,7 @@ const userSchema: mongoose.Schema = new mongoose.Schema<IUserModel>(
       required: [true, "Name is required!"],
       validate: {
         validator: (name: string): boolean => {
-          return /^[a-zA-ZÀ-ÿ]{2,}$/.test(name);
+          return name.length >= 2;
         },
         message: "Name must contain at least 2 or more characters each.",
       },
