@@ -14,7 +14,8 @@ interface IUserLoRaSimModel extends mongoose.Document {
   nackPerc: number;
   opMode: string;
   shadowingModel: string | boolean;
-  simArea: string;
+  //simArea: string;
+  radius: number;
   simTime: number;
   title: string;
   user: mongoose.Schema.Types.ObjectId;
@@ -44,8 +45,12 @@ const userLoRaSimulationSchema: mongoose.Schema =
           message: "Description must contain at least 3 or more characters.",
         },
       },
-      simArea: {
+      /*simArea: {
         type: String,
+        required: [true, "Simulation area is required!"],
+      },*/
+      radius: {
+        type: Number,
         required: [true, "Simulation area is required!"],
       },
       simTime: {

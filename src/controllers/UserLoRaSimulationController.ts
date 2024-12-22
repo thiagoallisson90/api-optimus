@@ -43,7 +43,10 @@ const userLoRaSimSchema = z
         required_error: "Description is required!",
       })
       .optional(),
-    simArea: z.string({
+    /*simArea: z.string({
+      required_error: "Simulation area is required!",
+    }),*/
+    radius: z.coerce.number({
       required_error: "Simulation area is required!",
     }),
     simTime: z.coerce
@@ -132,7 +135,7 @@ interface IUserLoRaSimController {
     nackPerc: number;
     opMode: string;
     shadowingModel: string | boolean;
-    simArea: string;
+    radius: string;
     simTime: number;
     title: string;
     user?: string | object;
