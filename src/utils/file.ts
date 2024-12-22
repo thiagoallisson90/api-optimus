@@ -60,3 +60,7 @@ export const createFolder = (folder: string): boolean => {
 
   return true;
 };
+
+export const getDirName = () => {
+  return __dirname;
+};

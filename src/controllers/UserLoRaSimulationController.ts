@@ -1,10 +1,19 @@
 import { Response, Request, RequestHandler } from "express";
 import { z } from "zod";
 import mongoose from "mongoose";
-import UserLoRaSimulation from "../models/UserLoRaSimulationModel.js";
-import { createFolder, delCoords, saveCoords } from "../utils/file.js";
+import UserLoRaSimulation, {
+  IUserLoRaSimModel,
+} from "../models/UserLoRaSimulationModel.js";
+import {
+  createFolder,
+  delCoords,
+  getDirName,
+  saveCoords,
+} from "../utils/file.js";
 import User from "../models/UserModel.js";
 import path from "path";
+
+import { spawn } from "child_process";
 
 const verifyCoords = (coords: string[]): boolean => {
   const test: boolean[] = coords.map((coord) => {
@@ -360,3 +369,91 @@ export const deleteUserLoRaSim: RequestHandler = async (
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };
+
+export const runSimulation: RequestHandler = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id) || id === undefined) {
+      return res.status(400).json("Simulation ID is invalid!");
+    }
+
+    const sim = await UserLoRaSimulation.findById(id);
+    if (!sim) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Simulation not found!" });
+    }
+
+    const dir = getDirName();
+    const basePath = `${dir}${path.sep}files${path.sep}${sim.user}${path.sep}${id}`;
+    const pathData = `${dir}${path.sep}files${path.sep}${sim.user}${path.sep}${id}${path.sep}data`;
+    const pathImgs = `${dir}${path.sep}files${path.sep}${sim.user}${path.sep}${id}${path.sep}imgs`;
+
+    // Aguarda a execução da simulação
+    await runNS3(sim, basePath);
+
+    return res.status(201).json({
+      success: true,
+      message: "Simulation executed successfully!",
+      data: [pathData, pathImgs],
+    });
+  } catch (error: any) {
+    if (process.env.NODE_ENV === "development") {
+      console.error("Error in Running of Simulation LoRa:", error.message);
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Error in Running of Simulation LoRa!",
+    });
+  }
+};
+
+async function runNS3(sim: IUserLoRaSimModel, basePath: string): Promise<void> {
+  const command = process.env.NS3_CMD || "";
+  const args = [
+    "run",
+    `"scratch/optimus.cc --path=${basePath} --nDevices=${sim.edCount} --nGateways=${sim.gatewayCount} --radius=${sim.radius} --simulationTime=${sim.simTime} --loss=${sim.lossModel} --nack=${sim.nackPerc} --ack=${sim.ackPerc} --appType=${sim.appType} --payload=${sim.appPayload}"`,
+  ];
+
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, { shell: true });
+
+    let stdout = "";
+    let stderr = "";
+
+    // Captura a saída padrão
+    child.stdout.on("data", (data) => {
+      stdout += data.toString();
+      console.log(`stdout:\n${data}`);
+    });
+
+    // Captura erros
+    child.stderr.on("data", (data) => {
+      stderr += data.toString();
+      console.error(`Erro:\n${data}`);
+    });
+
+    // Trata o encerramento do processo
+    child.on("close", (code) => {
+      if (code === 0) {
+        console.log("Processo concluído com sucesso!");
+        resolve();
+      } else {
+        reject(
+          new Error(
+            `Processo terminou com erro, código: ${code}. Saída: ${stderr}`
+          )
+        );
+      }
+    });
+
+    // Trata erros na execução
+    child.on("error", (error) => {
+      reject(new Error(`Erro ao iniciar o processo: ${error.message}`));
+    });
+  });
+}

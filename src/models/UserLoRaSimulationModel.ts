@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface IUserLoRaSimModel extends mongoose.Document {
+export interface IUserLoRaSimModel extends mongoose.Document {
   ackPerc: number;
   appPayload: number;
   appType: string;

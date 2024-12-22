@@ -7,6 +7,7 @@ import {
   getUserLoRaSimByUser,
   getUserLoRaSims,
   updateUserLoRaSim,
+  runSimulation,
 } from "../controllers/UserLoRaSimulationController.js";
 import { isAuthAsAdmin } from "../middleware/user/isAuthAsAdmin.js";
 import { isAuthAsMember } from "../middleware/user/isAuthAsMember.js";
@@ -23,5 +24,6 @@ router.get("/user/:email", getUserLoRaSimByUser);
 
 // Here
 router.post("/", isAuth, createUserLoRaSim);
+router.put("/run/:id", isAuth, runSimulation);
 
 export default router;
