@@ -389,8 +389,6 @@ export const runSimulation: RequestHandler = async (
 
     const dir = getDirName();
     const basePath = `${dir}${path.sep}files${path.sep}${sim.user}${path.sep}${id}`;
-    const pathData = `${dir}${path.sep}files${path.sep}${sim.user}${path.sep}${id}${path.sep}data`;
-    const pathImgs = `${dir}${path.sep}files${path.sep}${sim.user}${path.sep}${id}${path.sep}imgs`;
 
     // Aguarda a execução da simulação
     await runNS3(sim, basePath);
@@ -398,7 +396,7 @@ export const runSimulation: RequestHandler = async (
     return res.status(201).json({
       success: true,
       message: "Simulation executed successfully!",
-      data: [pathData, pathImgs],
+      data: `${sim.user}${path.sep}${id}`,
     });
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {
